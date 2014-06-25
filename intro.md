@@ -5,4 +5,8 @@ Human vision capabilities have always been far superior as compared to coputer v
 
 The task of seperating objects from an image is called segentation.  Given an 2D Image, the segmentation algorithm outputs a labelled image. The labelled image has the same dimensions as the original image. For all pixels in the original image belonging to the same object, the corresponding pixels in the labelled image have a single unique value.
 
-[Labelled Image](https://vcansimplify.files.wordpress.com/2014/06/label.png)
+![Labelled Image](https://vcansimplify.files.wordpress.com/2014/06/label.png)
+
+###### Each block reresents a pixel.The blue and green areas of the iage come from differrent ojects.######
+
+
