@@ -14,24 +14,24 @@ solve this problem.
 The function `show_img` is defined so that images displayed are big enough for
 comfortable viewing. We start with `img`, a nice fresh image of a coffee cup.
 
-
-    from skimage import graph, data, io, segmentation, color
-    from matplotlib import pyplot as plt
-    from skimage.measure import regionprops
-    from skimage import draw
-    import numpy as np
-    
-    
-    def show_img(img):
-        width = 10.0
-        height = img.shape[0]*width/img.shape[1]
-        f = plt.figure(figsize=(width, height))
-        plt.imshow(img)
-    
-    img = data.coffee()
-    show_img(img)
+```python
+from skimage import graph, data, io, segmentation, color
+from matplotlib import pyplot as plt
+from skimage.measure import regionprops
+from skimage import draw
+import numpy as np
 
 
+def show_img(img):
+    width = 10.0
+    height = img.shape[0]*width/img.shape[1]
+    f = plt.figure(figsize=(width, height))
+    plt.imshow(img)
+
+img = data.coffee()
+show_img(img)
+
+```
 ![png](rag_demo_files/rag_demo_2_0.png)
 
 
