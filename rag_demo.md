@@ -92,10 +92,10 @@ rag = graph.rag_mean_color(img, labels)
 For our visualization, we are also adding an additional property to a node, the
 coordinated of its centroid.
 
-
-    for region in regions:
-        rag.node[region['label']]['centroid'] = region['centroid']
-
+```python
+for region in regions:
+    rag.node[region['label']]['centroid'] = region['centroid']
+```
 `display_edges` is a function to draw the edges of a RAG on it's cooresponsing
 image. The edges are drawn in green. It also marks the centroid of each region
 by a yellow dot. It also takes an argument `thresh`, only edges with weight
