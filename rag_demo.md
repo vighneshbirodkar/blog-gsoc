@@ -44,20 +44,20 @@ color. The label of each pixel is stored in the `labels` array.
 `regionprops` helps us compute various features of these regions, the one we
 will be using (purely for visualization) is the centroid.
 
-
-    labels = segmentation.slic(img, compactness=30, n_segments=400)
-    labels = labels + 1  # So that no labelled region is 0 and ignored by regionprops
-    regions = regionprops(labels)
-
+```python
+labels = segmentation.slic(img, compactness=30, n_segments=400)
+labels = labels + 1  # So that no labelled region is 0 and ignored by regionprops
+regions = regionprops(labels)
+```
 
 The `label2rgb` function assigns a specific color to all pixels belonging to one
 region (having the same label). In this case, in `label_rgb` each pixel is
 replaces with the average `RGB` color of its region.
 
-
-    label_rgb = color.label2rgb(labels, img, kind='avg')
-    show_img(label_rgb)
-
+```python
+label_rgb = color.label2rgb(labels, img, kind='avg')
+show_img(label_rgb)
+```
 
 
 ![png](rag_demo_files/rag_demo_6_0.png)
@@ -67,10 +67,10 @@ Just for clarity, we use `mark_boundaries` to highlight the region boundaries.
 You will notice the the image is divided into more regions than required. This
 phenomenon is called **Over-Segmentation**.
 
-
-    label_rgb = segmentation.mark_boundaries(label_rgb, labels, (0, 0, 0))
-    show_img(label_rgb)
-
+```python
+label_rgb = segmentation.mark_boundaries(label_rgb, labels, (0, 0, 0))
+show_img(label_rgb)
+```
 
 ![png](rag_demo_files/rag_demo_8_0.png)
 
@@ -86,9 +86,9 @@ their edge weight. The more similar the regions, the lesser the weight between
 them. Because we are using difference in mean color to compute the edge weight,
 the method has been named `rag_mean_color`.
 
-
-    rag = graph.rag_mean_color(img, labels)
-
+```python
+rag = graph.rag_mean_color(img, labels)
+```
 For our visualization, we are also adding an additional property to a node, the
 coordinated of its centroid.
 
@@ -101,36 +101,36 @@ image. The edges are drawn in green. It also marks the centroid of each region
 by a yellow dot. It also takes an argument `thresh`, only edges with weight
 lower than `thresh` are drawn.
 
+```python
+def display_edges(img, rag, thresh):
+    img = img.copy()
+    for edge in rag.edges_iter(data=True):
 
-    def display_edges(img, rag, thresh):
-        img = img.copy()
-        for edge in rag.edges_iter(data=True):
-    
-            r1,r2,data = edge
-            y1 = rag.node[r1]['centroid'][0]
-            x1 = rag.node[r1]['centroid'][1]
-    
-            y2 = rag.node[r2]['centroid'][0]
-            x2 = rag.node[r2]['centroid'][1]
-            x1,x2,y1,y2 = int(x1),int(x2),int(y1),int(y2)
-            line  = draw.line(y1,x1,y2,x2)
-            circle = draw.circle(y1,x1,2)
-    
-            wt = data['weight']
-            
-            if wt < thresh :
-                img[line] = 0,1,0
-            img[circle] = 1,1,0
-    
-        return img
+        r1,r2,data = edge
+        y1 = rag.node[r1]['centroid'][0]
+        x1 = rag.node[r1]['centroid'][1]
 
+        y2 = rag.node[r2]['centroid'][0]
+        x2 = rag.node[r2]['centroid'][1]
+        x1,x2,y1,y2 = int(x1),int(x2),int(y1),int(y2)
+        line  = draw.line(y1,x1,y2,x2)
+        circle = draw.circle(y1,x1,2)
+
+        wt = data['weight']
+        
+        if wt < thresh :
+            img[line] = 0,1,0
+        img[circle] = 1,1,0
+
+    return img
+```
 We call the function with `thresh = infinity` so that all edges are drawn. I
 myself was surprised with the beauty of the following output.
 
-
-    edges_drawn_all = display_edges(label_rgb, rag, np.inf )
-    show_img(edges_drawn_all)
-
+```python
+edges_drawn_all = display_edges(label_rgb, rag, np.inf )
+show_img(edges_drawn_all)
+```
 
 ![png](rag_demo_files/rag_demo_16_0.png)
 
@@ -138,10 +138,10 @@ myself was surprised with the beauty of the following output.
 Let's see what happens by setting `thresh` to `30`, a value I arrived at with
 some trial and error.
 
-
-    edges_drawn_30 = display_edges(label_rgb, rag, 30 )
-    show_img(edges_drawn_30)
-
+```python
+edges_drawn_30 = display_edges(label_rgb, rag, 30 )
+show_img(edges_drawn_30)
+```
 
 
 ![png](rag_demo_files/rag_demo_18_0.png)
@@ -160,12 +160,12 @@ labels a connected component as one region. Once the RAG is constructed, many
 such strategies can be employed to improved the segmentation. Thresholding
 however, requires human assistance.
 
-
-    final_labels = graph.cut_threshold(labels, rag, 30)
-    final_label_rgb = color.label2rgb(final_labels, img, kind='avg')
-    final_label_rgb = segmentation.mark_boundaries(final_label_rgb, final_labels, (0,0,0))
-    show_img(final_label_rgb)
-
+```python
+final_labels = graph.cut_threshold(labels, rag, 30)
+final_label_rgb = color.label2rgb(final_labels, img, kind='avg')
+final_label_rgb = segmentation.mark_boundaries(final_label_rgb, final_labels, (0,0,0))
+show_img(final_label_rgb)
+```
 
 ![png](rag_demo_files/rag_demo_22_0.png)
 
