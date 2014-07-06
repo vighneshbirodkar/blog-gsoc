@@ -3,11 +3,16 @@
 
 Humans possess an incredible ability to identify objects in an image. Image
 processing algorithms are still far behind this ability. **Segmentation** is the
-process of identifying objects in an image. All pixels belonging to an object
+process of dividing an image into meaningful regions. All pixels belonging to a region
 should get a unique label in an ideal segmentation.
 
+The current segmentation functions in scikit-image are too fine grained and fall closer
+to superpixel methods, providing a starting point for segmentation. Region Adjacency Graphs (RAGs)
+are a common data structure for many segmentation algorithms. As part of [GSoC](http://www.google-melange.com/gsoc/project/details/google/gsoc2014/vighneshbirodkar/5874785116487680) this year I am implementing
+RAGs for scikit-image. The current HEAD of scikit-image's master branch contains my RAG implementation
+based on [Networkx](https://networkx.github.io/) from my recent [Pull Request](https://github.com/scikit-image/scikit-image/pull/1031).
 In the example below, we will see how Region Adjacency Graphs (RAGs) attempt to
-solve this problem.
+solve the segmentation problem.Please note that you need the lastest [master](https://github.com/scikit-image/scikit-image) branch of scikit-image to run the following code.
 
 
 # Getting Started
