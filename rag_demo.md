@@ -16,9 +16,8 @@ solve the segmentation problem.Please note that you need the lastest [master](ht
 
 
 # Getting Started
-The function `show_img` is defined so that images displayed are big enough for
-comfortable viewing. We start with `img`, a nice fresh image of a coffee cup.
-
+We define the function `show_img` in preference to the standard call to `imshow` to set nice default size parameters.
+We start with `coffee`, a nice fresh image of a coffee cup.
 ```python
 from skimage import graph, data, io, segmentation, color
 from matplotlib import pyplot as plt
@@ -41,14 +40,13 @@ show_img(img)
 
 
 # Over Segmentation
-We segment the image using SLIC algorithm. The segmentation algorithm will
-assign one unique label to what it perceives as a **Region**. This is a
-localized cluster of pixels sharing some similar proerpty, in this case their
+We segment the image using SLIC algorithm. The SLIC algorithm will
+assign a unique label to each **region**. This is a
+localized cluster of pixels sharing some similar property, in this case their
 color. The label of each pixel is stored in the `labels` array.
 
-`regionprops` helps us compute various features of these regions, the one we
-will be using (purely for visualization) is the centroid.
-
+`regionprops` helps us compute various features of these regions. We will be
+sing the centroid, purely for visualization.
 ```python
 labels = segmentation.slic(img, compactness=30, n_segments=400)
 labels = labels + 1  # So that no labelled region is 0 and ignored by regionprops
@@ -70,7 +68,7 @@ show_img(label_rgb)
 
 Just for clarity, we use `mark_boundaries` to highlight the region boundaries.
 You will notice the the image is divided into more regions than required. This
-phenomenon is called **Over-Segmentation**.
+phenomenon is called **over-segmentation**.
 
 ```python
 label_rgb = segmentation.mark_boundaries(label_rgb, labels, (0, 0, 0))
@@ -101,33 +99,44 @@ coordinated of its centroid.
 for region in regions:
     rag.node[region['label']]['centroid'] = region['centroid']
 ```
-`display_edges` is a function to draw the edges of a RAG on it's cooresponsing
-image. The edges are drawn in green. It also marks the centroid of each region
-by a yellow dot. It also takes an argument `thresh`, only edges with weight
-lower than `thresh` are drawn.
-
+`display_edges` is a function to draw the edges of a RAG on its cooresponding
+image. It draws edges as green lines and centroids as yellow dots.
+It also accepts an argument, `thresh`. We only draw edges with weight below this threshold.
 ```python
-def display_edges(img, rag, thresh):
-    img = img.copy()
-    for edge in rag.edges_iter(data=True):
-
-        r1,r2,data = edge
-        y1 = rag.node[r1]['centroid'][0]
-        x1 = rag.node[r1]['centroid'][1]
-
-        y2 = rag.node[r2]['centroid'][0]
-        x2 = rag.node[r2]['centroid'][1]
-        x1,x2,y1,y2 = int(x1),int(x2),int(y1),int(y2)
-        line  = draw.line(y1,x1,y2,x2)
-        circle = draw.circle(y1,x1,2)
-
-        wt = data['weight']
+def display_edges(image, g, threshold):
+    """Draw edges of a RAG on its image
+    
+    Returns a modified image with the edges drawn.Edges are drawn in green
+    and nodes are drawn in yellow.
+    
+    Parameters
+    ----------
+    image : ndarray
+        The image to be drawn on.
+    g : RAG
+        The Region Adjacency Graph.
+    threshold : float
+        Only edges in `g` below `threshold` are drawn.
         
-        if wt < thresh :
-            img[line] = 0,1,0
-        img[circle] = 1,1,0
+    Returns:
+    out: ndarray
+        Image with the edges drawn.
+    """
+    image = image.copy()
+    for edge in g.edges_iter():
+        n1, n2 = edge
+        
+        r1, c1 = map(int, rag.node[n1]['centroid'])
+        r2, c2 = map(int, rag.node[n2]['centroid'])
 
-    return img
+        line  = draw.line(r1, c1, r2, c2)
+        circle = draw.circle(r1,c1,2)
+
+        if g[n1][n2]['weight'] < threshold :
+            image[line] = 0,1,0
+        image[circle] = 1,1,0
+
+    return image
 ```
 We call the function with `thresh = infinity` so that all edges are drawn. I
 myself was surprised with the beauty of the following output.
@@ -160,22 +169,20 @@ component.
 
 # Threshold Cut
 
-The function `cut_threshold` removes edges below a soecified threshold and then
-labels a connected component as one region. Once the RAG is constructed, many
-such strategies can be employed to improved the segmentation. Thresholding
-however, requires human assistance.
+The function `cut_threshold` removes edges below a specified threshold and then
+labels a connected component as one region. Once the RAG is constructed, many similar
+and more sophisticated strategies can improve the initial segmentation.
 
 ```python
 final_labels = graph.cut_threshold(labels, rag, 30)
 final_label_rgb = color.label2rgb(final_labels, img, kind='avg')
-final_label_rgb = segmentation.mark_boundaries(final_label_rgb, final_labels, (0,0,0))
 show_img(final_label_rgb)
 ```
 
 ![png](rag_demo_files/rag_demo_22_0.png)
 
 
-### Not perfect, but not that bad I would say
+Not perfect, but not that bad I'd say. My next steps will be to implement better algorithms to process the RAG after the initial segmentation.These include the merging predicates mention [here](http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.11.5274) and [N-cut](http://www.cs.berkeley.edu/~malik/papers/SM-ncut.pdf).
 
 
     
