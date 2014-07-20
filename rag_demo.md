@@ -149,11 +149,11 @@ show_img(edges_drawn_all)
 ![png](rag_demo_files/rag_demo_16_0.png)
 
 
-Let's see what happens by setting `thresh` to `30`, a value I arrived at with
+Let's see what happens by setting `thresh` to `29`, a value I arrived at with
 some trial and error.
 
 ```python
-edges_drawn_30 = display_edges(label_rgb, rag, 30 )
+edges_drawn_29 = display_edges(label_rgb, rag, 29 )
 show_img(edges_drawn_30)
 ```
 
@@ -174,7 +174,7 @@ labels a connected component as one region. Once the RAG is constructed, many si
 and more sophisticated strategies can improve the initial segmentation.
 
 ```python
-final_labels = graph.cut_threshold(labels, rag, 30)
+final_labels = graph.cut_threshold(labels, rag, 29)
 final_label_rgb = color.label2rgb(final_labels, img, kind='avg')
 show_img(final_label_rgb)
 ```
