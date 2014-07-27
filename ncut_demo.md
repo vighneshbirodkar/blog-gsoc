@@ -299,7 +299,7 @@ greater than the specified threshold. Here is a small snippet to illustrate.
 ## NCut in Action
 To observe how the NCut works, I wrote a small hack. This shows us the regions
 as divides by the method at every stage of recursion. The code relies on a
-modification in the original code, which can be seen here.
+modification in the original code, which can be seen [here](https://github.com/vighneshbirodkar/scikit-image/compare/vighneshbirodkar:ncut...ncut_demo).
 
 
 
