@@ -346,7 +346,7 @@ made webm videos. Below are a few images and their respective successive NCuts.
 [](colors.png)
 
 
-![Alt text](colors.png)
+![Alt text](ncut_demo_files/colors.png)
 
 https://dl.dropboxusercontent.com/u/74846509/colors.webm
 
