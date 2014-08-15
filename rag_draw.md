@@ -74,9 +74,11 @@ show_image(out)
 
 
 In the above image, nodes are shown in yellow whereas edges are shown in green.
-Each region is represented by its centroid. But as you can see, no single edge
-color may be prominent across the entire image. For this reason, we support the
-`desaturate` argument. It converts the image to gray scale before displaying.
+Each region is represented by its centroid. As Juan pointed out, many edges will be 
+difficult to see because of low contrant between them and the image, as seen above. To
+counter this we support the `desaturate` option. When set to `True` the image is 
+converted to grayscale before displaying. Hence all the image pixels are a shade of gray,
+while the edges and nodes stand out.
 
 ```python
 out = graph.draw_rag(labels, rag, border_image, desaturate=True)
@@ -124,9 +126,24 @@ show_image(out)
 ````
 
 ![png](rag_draw_files/rag_draw_17_0.png)
+**Ahhh, magnificent.** 
+
+Here is a small piece of code which produces a typical deaturated color-distance RAG.
+
+```python
+image = data.coffee()
+labels = segmentation.slic(image, compactness=30, n_segments=400)
+rag = graph.rag_mean_color(image, labels)
+cmap = colors.ListedColormap(['blue','red'])
+out = graph.draw_rag(labels, rag, image,border_color=(0,0,0), desaturate=True,colormap=cmap)
+show_image(out)
+```
+
+If you notice the above image, you will find some dges crossing over each other. This is because, the over segmented regions might not always be regular. Some regions might be shaped in such a way that they are adjacent to more than 4 regions around them, unlike a perfect grid.
+
+![png](rag_draw_files/coffee_extra.png)
 
 
-**Ahhh, magnificent.**
 
 ## Examples
 I will go over some examples of RAG drawings, since most of it is similar, I won't repeat the 
