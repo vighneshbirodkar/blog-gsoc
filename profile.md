@@ -1,7 +1,6 @@
-A closer look at NCut
----------------------
+# A closer look at NCut
 
-# Variation with number of regions
+## Variation with number of regions
 
 
 In this [post](http://vcansimplify.wordpress.com/2014/07/29/normalized-cuts-on-region-adjacency-graphs/) I explained how the Normalized Cut works and demonstrated some examples of it. This post aims to take a closer look at the code. I ran the following code to monitor the time taken by NCut with respect to initial number of regions.
@@ -29,7 +28,7 @@ for nseg in segment_list:
 
 By a little guess work, I figured that the curve approximately varies as ``x**2.2``. For 800 nodes, the time taken is around 35 seconds.
 
-# Line Profile
+## Line Profile
 
 I used [line profiler](https://pythonhosted.org/line_profiler/) to examine the time taken by each line of code in `threshold_normalized`. Here are the results.
 
@@ -102,6 +101,6 @@ Since the problem is specific to ARPack, using other libraries might lead to fas
 
 Also, we can optionally ask the user for a function to solve the eigenvalue problen, so that he can use a matrix library of his choice if he/she so desires.
 
-# Final Thoughts
+## Final Thoughts
 Although the current Normalized Cut implementation taken more than quadratic time, the preceding over segmentation method does most of the heavy lifting. With something like SLIC, we can be sure of the number of nodes irrespective of the input image size. Although, a better eigenvalue finding technique would immensely improve its performance.
 
