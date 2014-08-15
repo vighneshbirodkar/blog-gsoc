@@ -13,8 +13,8 @@ introduction/) to help better visualize the results. Later,
 for scikit-image. It will indeed be a very helpful tool for anyone who wants to
 explore RAGs in scikit-image.
 
-Getting Started
----------------
+## Getting Started
+
 You will need to pull for [this](https://github.com/scikit-image/scikit-
 image/pull/1087) Pull Request to be able to execute the code below. I'll start
 by defining a custom `show_image` function to aid displaying in IPython
@@ -61,14 +61,14 @@ show_image(border_image)
 
 ![png](rag_draw_files/rag_draw_7_0.png)
 
-
+## Drawing the RAGs
 We can now form out RAG and see how it looks.
 
 ```python
 rag = graph.rag_mean_color(image, labels)
 out = graph.draw_rag(labels, rag, border_image)
-show_image(border_image)
-````
+show_image(out)
+```
 
 ![png](rag_draw_files/rag_draw_9_1.png)
 
@@ -128,6 +128,7 @@ show_image(out)
 
 **Ahhh, magnificent.**
 
+## Examples
 I will go over some examples of RAG drawings, since most of it is similar, I won't repeat the 
 code here. The Ncut technique, wherever used, was with its default parameters.
 
@@ -148,3 +149,9 @@ code here. The Ncut technique, wherever used, was with its default parameters.
 
 ### Coins Image and their color distance RAG after NCut
 ![png](rag_draw_files/coins.png)
+
+
+## Further Imporovements
+A point that was brought up in the PR as well is that thick lines would immensely enhance the visual
+appeal of the output. As and when they are implemented, `rag_draw` should be modified to support drawing
+thick edges.
