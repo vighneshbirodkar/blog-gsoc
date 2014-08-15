@@ -139,10 +139,8 @@ out = graph.draw_rag(labels, rag, image,border_color=(0,0,0), desaturate=True,co
 show_image(out)
 ```
 
-If you notice the above image, you will find some dges crossing over each other. This is because, the over segmented regions might not always be regular. Some regions might be shaped in such a way that they are adjacent to more than 4 regions around them, unlike a perfect grid.
-
 ![png](rag_draw_files/coffee_extra.png)
-
+If you notice the above image, you will find some dges crossing over each other. This is because, some regions are convex. Hence their centroid lies outside their boundary and edges eminating from it can cross other edges.
 
 
 ## Examples
@@ -154,6 +152,7 @@ code here. The Ncut technique, wherever used, was with its default parameters.
 
 ### Color distance RAG of Coffee after applying NCut
 ![png](rag_draw_files/cup2.png)
+Notice how the the centroid of the white rim of the cup is placed at its centre. It is the one adjacent to the centroid of the gray region of the upper part of the spoon, connected to it via a blue edge. Notice how this edge crosses others.
 
 ### Color distance RAG of Lena
 ![png](rag_draw_files/lena.png)
@@ -169,6 +168,7 @@ code here. The Ncut technique, wherever used, was with its default parameters.
 
 
 ## Further Improvements
-A point that was brought up in the PR as well is that thick lines would immensely enhance the visual
+ - A point that was brought up in the PR as well is that thick lines would immensely enhance the visual
 appeal of the output. As and when they are implemented, `rag_draw` should be modified to support drawing
 thick edges.
+ - As centroids don't always lie in within an objects boundary, we can represent regions by a point other than their centroid, something which always lies within the boundary. This would allow for better visualization of the actual RAG from its drawing. 
