@@ -3,7 +3,7 @@ Region Adjacency Graphs Drawing
 -------------------------------
 
 A lot of Image Processing algorithms are based on intuition from visual cues.
-Region Adjacency Graphs would also benifit if they were somwhow drawn back on
+Region Adjacency Graphs would also benefit if they were somehow drawn back on
 the images they represent. If we are able to see the nodes, edges, and the edges
 weights, we can fine tune our parameters and algorithms to suit our needs. I had
 written a small hack in this [blog
@@ -35,7 +35,7 @@ def show_image(img):
     plt.imshow(img)
 ```
 
-We will start by loading a demo image just containing 3 bold colros to help us
+We will start by loading a demo image just containing 3 bold colors to help us
 see how the `draw_rag` function works.
 
 ```python
@@ -75,8 +75,8 @@ show_image(out)
 
 In the above image, nodes are shown in yellow whereas edges are shown in green.
 Each region is represented by its centroid. But as you can see, no single edge
-color may be prominent accross the entire image. For this reason, we support the
-`desaturate` argument. It converts the image to grayscale before displaying.
+color may be prominent across the entire image. For this reason, we support the
+`desaturate` argument. It converts the image to gray scale before displaying.
 
 ```python
 out = graph.draw_rag(labels, rag, border_image, desaturate=True)
@@ -87,7 +87,7 @@ show_image(out)
 
 
 Although the above image does very well to show us individual regions and their
-adjacency relationships, it does nothing to show us the magnitutde of edges. To
+adjacency relationships, it does nothing to show us the magnitude of edges. To
 give us more information about the magnitude of edges, we have the `colormap`
 option. It colors edges between the first and the second color depending on
 their weight.
@@ -141,7 +141,7 @@ code here. The Ncut technique, wherever used, was with its default parameters.
 ### Color distance RAG of Lena
 ![png](rag_draw_files/lena.png)
 
-### A futurustic car and its color distance RAG after NCut
+### A futuristic car and its color distance RAG after NCut
 ![jpg](rag_draw_files/car.jpg)
 
 
@@ -151,7 +151,7 @@ code here. The Ncut technique, wherever used, was with its default parameters.
 ![png](rag_draw_files/coins.png)
 
 
-## Further Imporovements
+## Further Improvements
 A point that was brought up in the PR as well is that thick lines would immensely enhance the visual
 appeal of the output. As and when they are implemented, `rag_draw` should be modified to support drawing
 thick edges.
