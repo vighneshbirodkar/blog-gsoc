@@ -9,7 +9,7 @@ Region Adjacency Graphs model regions in an image as nodes of a graph with edges
 
 The `merge_hierarchical` function performs hierarchical merging on a RAG. It picks up the smallest weighing edge and combines the regions connected by it. The new region is adjacent to all previous neighbors of the two combined regions. The weights are updated accordingly. It continues doing so till the minimum edge weight in the graph in more than the supplied `thresh` value. The function takes a RAG as input where smaller edge weight imply similar regions. Therefore, we use the `rag_mean_color` function with the default `"distance"` mode for RAG contruction. Here is a minimal code snippet.
 
-```
+```python
 from skimage import graph, data, io, segmentation, color
 
 
@@ -57,7 +57,7 @@ Setting a very low threshold, will not merge any regions and will give us back t
 
 With [this](https://github.com/vighneshbirodkar/scikit-image/compare/vighneshbirodkar:ha...ha_video) modification the following code can output the effect of all the intermediate segmentation during each iteration.
 
-```
+```python
 from skimage import graph, data, io, segmentation, color
 import time
 from matplotlib import pyplot as plt
