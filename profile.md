@@ -6,13 +6,13 @@
 In this [post](http://vcansimplify.wordpress.com/2014/07/29/normalized-cuts-on-region-adjacency-graphs/) I explained how the Normalized Cut works and demonstrated some examples of it. This post aims to take a closer look at the code. I ran the following code to monitor the time taken by NCut with respect to initial number of regions.
 
 ```python
+from __future__ import print_function
 from skimage import graph, data, io, segmentation, color
 import time
 from matplotlib import pyplot as plt
 
 image = data.coffee()
 segment_list = range(50, 801, 50)
-
 
 for nseg in segment_list:
     labels = segmentation.slic(image, compactness=30, n_segments=nseg)
@@ -22,7 +22,7 @@ for nseg in segment_list:
     time_taken = time.time() - T
     out = color.label2rgb(new_labels, image, kind='avg')
     io.imsave('/home/vighnesh/Desktop/ncut/' + str(nseg) + '.png', out)
-    print nseg, time_taken
+    print(nseg, time_taken)
 ```
 ![ncut profile](ncut_profile/graph.png)
 
@@ -95,12 +95,17 @@ I used [line profiler](https://pythonhosted.org/line_profiler/) to examine the t
 The output of each iteration can be seen here.
 http://imgur.com/a/ojR1n?gallery
 
-As you can see above 95% of the time is taken by the call to [eigsh](http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.sparse.linalg.eigsh.html). The function is used to solve the eigenvalue problem for a symmetric hermitian matrix. It in turn relies on a library called [APPack](http://www.caam.rice.edu/software/ARPACK/). As documented [here](http://docs.scipy.org/doc/scipy/reference/tutorial/arpack.html) ARPack isn't very good at finding the smallest eigenvectors. If the value supplied as the argument `k` is too less, we get the `ArpackNoConvergence` Exception. Although the [original paper](http://www.cs.berkeley.edu/~malik/papers/SM-ncut.pdf) claims that the problem can be solved in ``O(n)`` with [Lanczos Method](http://en.wikipedia.org/wiki/Lanczos_algorithm), ARPack is taking it towards slightly more than ``O(n^2)``
+As you can see above 95% of the time is taken by the call to [eigsh](http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.sparse.linalg.eigsh.html). 
+
+To take a closer look at it, I plotted time while ensuring only one iteration. This commit [here](https://github.com/vighneshbirodkar/scikit-image/commit/2cb85076462a1cd57a8d2c8c744064349b4cdf51) takes care of it. Also, I canged the `eigsh` call to look for the largest eigenvectors instead of the smallest ones, with this commit [here](https://github.com/vighneshbirodkar/scikit-image/compare/ncut_profile). Here are the results.
+![one iteration](ncut_profile/one_it.png)
+
+A signle eignenvalue computation is bounded by ``O(n^1.5)`` as mentioned in the [original paper](http://www.cs.berkeley.edu/~malik/papers/SM-ncut.pdf). The recursive NCuts are pushing the time required towards more than ``O(n^2)``.`eigsh` solves the eigenvalue problem for a symmetric hermitian matrix. It in turn relies on a library called [ARPack](http://www.caam.rice.edu/software/ARPACK/). As documented [here](http://docs.scipy.org/doc/scipy/reference/tutorial/arpack.html) ARPack isn't very good at finding the smallest eigenvectors. If the value supplied as the argument `k` is too small, we get the `ArpackNoConvergence` Exception. As seen from the above plot, finding the largest eigenvectors is much more efficient using the `eigsh` function.
 
 Since the problem is specific to ARPack, using other libraries might lead to faster computation. [slepc4py](https://code.google.com/p/slepc4py/) is one such BSD liscensed library. The possibility of optionally importing `slec4py` should be certainly explored in the near future. 
 
 Also, we can optionally ask the user for a function to solve the eigenvalue problen, so that he can use a matrix library of his choice if he/she so desires.
 
 ## Final Thoughts
-Although the current Normalized Cut implementation taken more than quadratic time, the preceding over segmentation method does most of the heavy lifting. With something like SLIC, we can be sure of the number of nodes irrespective of the input image size. Although, a better eigenvalue finding technique would immensely improve its performance.
+Although the current Normalized Cut implementation takes more than quadratic time, the preceding over segmentation method does most of the heavy lifting. With something like SLIC, we can be sure of the number of nodes irrespective of the input image size. Although, a better eigenvalue finding technique for smallest eigenvectors would immensely improve its performance.
 
